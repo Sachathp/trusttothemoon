@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/trusttothemoon/', // Nom de votre repo GitHub
+  // base: '/trusttothemoon/', // Uniquement pour GitHub Pages, pas pour Vercel
   server: {
     // Configuration pour éviter les problèmes de cache
     headers: {
