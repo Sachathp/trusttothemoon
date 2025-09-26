@@ -14,16 +14,16 @@ const RELIC_TYPES = [
   { id: 'mystic', name: 'Mystic', multiplier: 2.00, color: 'pink' }
 ]
 
-// Configuration des rôles Discord avec leurs multiplicateurs
+// Configuration des rôles Discord dans l'ordre hiérarchique (du plus petit au plus grand)
 const DISCORD_ROLES = [
-  { id: 'oracle', name: 'Oracle', level: 5, multiplier: 1.50, color: 'purple' },
-  { id: 'conscious', name: 'Conscious', level: 9, multiplier: 1.35, color: 'green' },
-  { id: 'flamebearer', name: 'Flamebearer', level: 3, multiplier: 1.25, color: 'red' },
-  { id: 'illuminated', name: 'Illuminated', level: 7, multiplier: 1.40, color: 'yellow' },
-  { id: 'enchanter', name: 'Enchanter', level: 9, multiplier: 1.35, color: 'pink' },
-  { id: 'disciple', name: 'Disciple', level: 21, multiplier: 1.60, color: 'cyan' },
-  { id: 'traveler', name: 'Traveler', level: 25, multiplier: 1.65, color: 'orange' },
-  { id: 'wanderer', name: 'Wanderer', level: 42, multiplier: 1.75, color: 'indigo' }
+  { id: 'wanderer', name: 'Wanderer', level: 42, multiplier: 1.02, color: 'indigo', description: '+2% bonus' },
+  { id: 'traveler', name: 'Traveler', level: 25, multiplier: 1.04, color: 'orange', description: '+4% bonus' },
+  { id: 'disciple', name: 'Disciple', level: 21, multiplier: 1.06, color: 'cyan', description: '+6% bonus' },
+  { id: 'enchanter', name: 'Enchanter', level: 9, multiplier: 1.08, color: 'pink', description: '+8% bonus' },
+  { id: 'illuminated', name: 'Illuminated', level: 7, multiplier: 1.10, color: 'yellow', description: '+10% bonus' },
+  { id: 'flamebearer', name: 'Flamebearer', level: 3, multiplier: 1.12, color: 'red', description: '+12% bonus' },
+  { id: 'conscious', name: 'Conscious', level: 9, multiplier: 1.15, color: 'green', description: '+15% bonus' },
+  { id: 'oracle', name: 'Oracle', level: 5, multiplier: 1.20, color: 'purple', description: '+20% bonus' }
 ]
 
 // Formules de calcul cohérentes
@@ -56,6 +56,7 @@ function App() {
     ancient: 0,
     mystic: 0
   })
+  const [hasDiscordRole, setHasDiscordRole] = useState(false)
   const [selectedDiscordRole, setSelectedDiscordRole] = useState(null)
   const [result, setResult] = useState(null)
 
@@ -79,7 +80,7 @@ function App() {
 
   const handleSimulation = () => {
     if (!iqPoints || iqPoints <= 0) {
-      alert('Veuillez entrer un nombre valide de points IQ')
+      alert('Please enter a valid number of IQ points')
       return
     }
 
@@ -92,7 +93,7 @@ function App() {
       : 1
     
     // Bonus rôle Discord
-    const discordMultiplier = calculateDiscordRoleBonus(selectedDiscordRole)
+    const discordMultiplier = hasDiscordRole ? calculateDiscordRoleBonus(selectedDiscordRole) : 1
     
     // Calcul final
     const finalTrustTokens = Math.floor(baseTrustTokens * relicMultiplier * discordMultiplier)
@@ -113,6 +114,7 @@ function App() {
     setIqPoints('')
     setHoldRelic(false)
     resetRelicCounts()
+    setHasDiscordRole(false)
     setSelectedDiscordRole(null)
     setResult(null)
   }
@@ -130,7 +132,7 @@ function App() {
               TRUST Airdrop
             </h1>
             <p className="text-gray-400 text-lg">
-              Simulateur d'airdrop • Prix TRUST: <span className="text-green-400 font-semibold">${TRUST_PRICE}</span>
+              Airdrop Simulator • TRUST Price: <span className="text-green-400 font-semibold">${TRUST_PRICE}</span>
             </p>
           </div>
 
@@ -140,13 +142,13 @@ function App() {
               {/* Input IQ Points */}
               <div className="glass-card p-8 animate-fadeInUp">
                 <label className="block text-lg font-medium text-white mb-4">
-                  Points IQ
+                  IQ Points
                 </label>
                 <input
                   type="number"
                   value={iqPoints}
                   onChange={(e) => setIqPoints(e.target.value)}
-                  placeholder="Entrez vos points IQ"
+                  placeholder="Enter your IQ points"
                   className="input-field w-full text-xl"
                   min="0"
                 />
@@ -171,7 +173,7 @@ function App() {
                 {holdRelic && (
                   <div className="space-y-4 animate-fadeInUp">
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-sm text-gray-400">Sélectionnez vos relics</span>
+                      <span className="text-sm text-gray-400">Select your relics</span>
                       <button
                         onClick={resetRelicCounts}
                         className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
@@ -231,47 +233,59 @@ function App() {
                 )}
               </div>
 
-              {/* Sélection de rôle Discord */}
+              {/* Discord Role Selection */}
               <div className="glass-card p-8 animate-slideIn" style={{animationDelay: '0.1s'}}>
-                <div className="mb-6">
-                  <label className="text-lg font-medium text-white mb-2 block">
-                    Rôle Discord
+                <div className="flex items-center justify-between mb-6">
+                  <label className="text-lg font-medium text-white">
+                    Discord Role
                   </label>
-                  <p className="text-sm text-gray-400">
-                    Sélectionnez votre rôle pour obtenir un bonus
-                  </p>
+                  <button
+                    onClick={() => setHasDiscordRole(!hasDiscordRole)}
+                    className={`toggle-switch ${hasDiscordRole ? 'active' : 'inactive'}`}
+                    aria-pressed={hasDiscordRole}
+                  >
+                    <span className={`toggle-thumb ${hasDiscordRole ? 'active' : 'inactive'}`} />
+                  </button>
                 </div>
 
-                <div className="role-selector">
-                  {DISCORD_ROLES.map((role) => (
-                    <div
-                      key={role.id}
-                      onClick={() => setSelectedDiscordRole(selectedDiscordRole === role.id ? null : role.id)}
-                      className={`role-card ${role.id} ${selectedDiscordRole === role.id ? 'selected' : ''}`}
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className={`w-3 h-3 rounded-full bg-${role.color}-500`}></div>
-                        <span className="text-xs text-gray-400">— {role.level}</span>
-                      </div>
-                      
-                      <div className="text-sm font-medium text-white mb-1">
-                        {role.name}
-                      </div>
-                      
-                      <div className="text-xs text-gray-400">
-                        ×{role.multiplier.toFixed(2)} bonus
-                      </div>
-                      
-                      {selectedDiscordRole === role.id && (
-                        <div className="mt-2 text-xs text-center">
-                          <span className={`text-${role.color}-400`}>
-                            +{((role.multiplier - 1) * 100).toFixed(0)}% sélectionné
-                          </span>
-                        </div>
-                      )}
+                {hasDiscordRole && (
+                  <div className="space-y-4 animate-fadeInUp">
+                    <div className="mb-4">
+                      <span className="text-sm text-gray-400">Select your role to get a bonus</span>
                     </div>
-                  ))}
-                </div>
+
+                    <div className="role-selector">
+                      {DISCORD_ROLES.map((role) => (
+                        <div
+                          key={role.id}
+                          onClick={() => setSelectedDiscordRole(selectedDiscordRole === role.id ? null : role.id)}
+                          className={`role-card ${role.id} ${selectedDiscordRole === role.id ? 'selected' : ''}`}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <div className={`w-3 h-3 rounded-full bg-${role.color}-500`}></div>
+                            <span className="text-xs text-gray-400">— {role.level}</span>
+                          </div>
+                          
+                          <div className="text-sm font-medium text-white mb-1">
+                            {role.name}
+                          </div>
+                          
+                          <div className="text-xs text-gray-400 mb-1">
+                            {role.description}
+                          </div>
+                          
+                          {selectedDiscordRole === role.id && (
+                            <div className="mt-2 text-xs text-center">
+                              <span className={`text-${role.color}-400 font-medium`}>
+                                ✓ Selected
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -281,7 +295,7 @@ function App() {
               <div className="flex space-x-4">
                 <button
                   onClick={handleSimulation}
-                  className="btn-primary flex-1 animate-glow"
+                  className="btn-primary flex-1"
                   disabled={!iqPoints}
                 >
                   🚀 Simulate
@@ -294,11 +308,11 @@ function App() {
                 </button>
               </div>
 
-              {/* Résultats */}
+              {/* Results */}
               {result && (
                 <div className="result-card animate-fadeInUp">
                   <h2 className="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                    📊 Résultats de simulation
+                    📊 Simulation Results
                   </h2>
                   
                   {/* Résultat principal */}
@@ -313,7 +327,7 @@ function App() {
                     </div>
                   </div>
 
-                  {/* Détail des calculs */}
+                  {/* Calculation Details */}
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between py-2 border-b border-white/10">
                       <span className="text-gray-400">Base ({result.iqPoints} IQ pts):</span>
@@ -322,12 +336,12 @@ function App() {
                     
                     {result.totalRelics > 0 && (
                       <div className="flex justify-between py-2 border-b border-white/10">
-                        <span className="text-gray-400">Bonus Relics (×{result.relicMultiplier.toFixed(3)}):</span>
+                        <span className="text-gray-400">Relic Bonus (×{result.relicMultiplier.toFixed(3)}):</span>
                         <span className="text-purple-400 font-medium">+{((result.relicMultiplier - 1) * 100).toFixed(1)}%</span>
                       </div>
                     )}
                     
-                    {selectedDiscordRole && (
+                    {selectedDiscordRole && hasDiscordRole && (
                       <div className="flex justify-between py-2 border-b border-white/10">
                         <span className="text-gray-400">
                           {DISCORD_ROLES.find(r => r.id === selectedDiscordRole)?.name} (×{result.discordMultiplier.toFixed(2)}):
@@ -337,36 +351,46 @@ function App() {
                     )}
                     
                     <div className="flex justify-between pt-4 text-lg font-bold">
-                      <span className="text-white">Total final:</span>
+                      <span className="text-white">Final Total:</span>
                       <span className="text-green-400">{result.finalTrustTokens.toLocaleString()} TRUST</span>
                     </div>
                   </div>
 
-                  {/* Info supplémentaire */}
+                  {/* Additional Info */}
                   <div className="text-xs text-center text-gray-500 pt-4 mt-4 border-t border-white/10">
-                    Formule: (IQ ÷ 1000) × 10 × Multiplicateur Relics × Bonus Rôle Discord
+                    Formula: (IQ ÷ 1000) × 10 × Relic Multiplier × Discord Role Bonus
                   </div>
                 </div>
               )}
 
-              {/* Placeholder quand pas de résultats */}
+              {/* Placeholder when no results */}
               {!result && (
                 <div className="glass-card p-12 text-center animate-fadeInUp" style={{animationDelay: '0.2s'}}>
                   <div className="text-6xl mb-4">🎯</div>
                   <h3 className="text-xl font-medium text-gray-300 mb-2">
-                    Prêt pour la simulation
+                    Ready for Simulation
                   </h3>
                   <p className="text-gray-500">
-                    Entrez vos points IQ et cliquez sur Simulate pour voir vos gains potentiels
+                    Enter your IQ points and click Simulate to see your potential gains
                   </p>
                 </div>
               )}
             </div>
           </div>
 
+          {/* Warning Message */}
+          <div className="text-center mt-8 animate-fadeInUp" style={{animationDelay: '0.35s'}}>
+            <div className="inline-flex items-center px-4 py-2 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-400">
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.314 18.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+              <span className="text-sm">This is a fictional simulator for demonstration purposes only</span>
+            </div>
+          </div>
+
           {/* Footer */}
-          <div className="text-center mt-12 text-gray-500 text-sm animate-fadeInUp" style={{animationDelay: '0.4s'}}>
-            <p>Simulateur non-officiel • Inspiré d'<a href="https://portal.intuition.systems/" className="text-blue-400 hover:text-blue-300 transition-colors">Intuition</a></p>
+          <div className="text-center mt-6 text-gray-500 text-sm animate-fadeInUp" style={{animationDelay: '0.4s'}}>
+            <p>Powered by <a href="https://portal.intuition.systems/" className="text-blue-400 hover:text-blue-300 transition-colors">Intuition</a></p>
           </div>
         </div>
       </div>
