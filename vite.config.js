@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/trust-airdrop-sim/', // Remplacez par le nom de votre repo GitHub
+  base: '/trusttothemoon/', // Nom de votre repo GitHub
   server: {
     // Configuration pour éviter les problèmes de cache
     headers: {
