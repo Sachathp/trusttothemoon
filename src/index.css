@@ -1,0 +1,341 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0a0a0a;
+    min-height: 100vh;
+    margin: 0;
+    color: white;
+    overflow-x: hidden;
+  }
+  
+  /* Fond animé inspiré d'Intuition */
+  .animated-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(119, 198, 255, 0.1) 0%, transparent 50%),
+                #0a0a0a;
+  }
+  
+  /* Particules flottantes */
+  .floating-particles::before,
+  .floating-particles::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .floating-particles::before {
+    top: 20%;
+    left: 20%;
+    animation-delay: -2s;
+  }
+  
+  .floating-particles::after {
+    top: 60%;
+    right: 20%;
+    animation-delay: -4s;
+  }
+}
+
+@layer components {
+  /* Cartes avec effet glassmorphism moderne */
+  .glass-card {
+    @apply bg-black/20 backdrop-blur-xl border border-white/10 rounded-3xl;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Champs de saisie modernes */
+  .input-field {
+    @apply bg-black/30 border border-white/20 rounded-2xl px-6 py-4 text-white placeholder-gray-400;
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50;
+    @apply transition-all duration-300;
+    backdrop-filter: blur(10px);
+  }
+  
+  .input-field:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+  }
+  
+  /* Bouton principal moderne */
+  .btn-primary {
+    @apply bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-600 hover:to-slate-700;
+    @apply text-white font-medium px-8 py-4 rounded-2xl transition-all duration-300;
+    @apply shadow-lg hover:shadow-2xl border border-white/20;
+    transform: translateY(0);
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(100, 116, 139, 0.2);
+  }
+  
+  .btn-primary:active {
+    transform: translateY(-1px);
+  }
+  
+  /* Bouton secondaire */
+  .btn-secondary {
+    @apply bg-white/10 hover:bg-white/20 text-white font-medium px-6 py-3 rounded-2xl;
+    @apply transition-all duration-300 border border-white/20 backdrop-blur-xl;
+  }
+  
+  .btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Toggle switch moderne */
+  .toggle-switch {
+    @apply relative inline-flex h-7 w-12 items-center rounded-full transition-all duration-300;
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500/50;
+  }
+  
+  .toggle-switch.active {
+    @apply bg-gradient-to-r from-blue-500 to-purple-600;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+  }
+  
+  .toggle-switch.inactive {
+    @apply bg-gray-700/50;
+  }
+  
+  .toggle-thumb {
+    @apply inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-300;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .toggle-thumb.active {
+    @apply translate-x-6;
+  }
+  
+  .toggle-thumb.inactive {
+    @apply translate-x-1;
+  }
+  
+  /* Cartes de relics */
+  .relic-card {
+    @apply bg-black/30 backdrop-blur-xl border rounded-2xl p-4 transition-all duration-300;
+    @apply hover:bg-black/40 cursor-pointer;
+  }
+  
+  .relic-card.common {
+    @apply border-gray-500/50 hover:border-gray-400;
+  }
+  
+  .relic-card.rare {
+    @apply border-blue-500/50 hover:border-blue-400;
+  }
+  
+  .relic-card.epic {
+    @apply border-purple-500/50 hover:border-purple-400;
+  }
+  
+  .relic-card.legendary {
+    @apply border-orange-500/50 hover:border-orange-400;
+  }
+  
+  .relic-card.ancient {
+    @apply border-yellow-500/50 hover:border-yellow-400;
+  }
+  
+  .relic-card.mystic {
+    @apply border-pink-500/50 hover:border-pink-400;
+  }
+  
+  .relic-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  }
+  
+  /* Compteurs dans les cartes de relics */
+  .relic-counter {
+    @apply bg-black/50 border border-white/20 rounded-xl px-3 py-2;
+    @apply flex items-center justify-between min-w-[120px];
+  }
+  
+  .counter-btn {
+    @apply bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg w-8 h-8;
+    @apply flex items-center justify-center transition-all duration-200;
+    @apply hover:scale-110 active:scale-95;
+  }
+  
+  /* Styles pour les rôles Discord */
+  .role-selector {
+    @apply grid grid-cols-2 gap-3;
+  }
+  
+  .role-card {
+    @apply bg-black/30 backdrop-blur-xl border rounded-2xl p-3 transition-all duration-300;
+    @apply hover:bg-black/40 cursor-pointer;
+  }
+  
+  .role-card.selected {
+    @apply bg-black/50 scale-105;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  }
+  
+  .role-card.oracle {
+    @apply border-purple-500/50 hover:border-purple-400;
+  }
+  
+  .role-card.oracle.selected {
+    @apply border-purple-400 bg-purple-500/20;
+  }
+  
+  .role-card.conscious {
+    @apply border-green-500/50 hover:border-green-400;
+  }
+  
+  .role-card.conscious.selected {
+    @apply border-green-400 bg-green-500/20;
+  }
+  
+  .role-card.flamebearer {
+    @apply border-red-500/50 hover:border-red-400;
+  }
+  
+  .role-card.flamebearer.selected {
+    @apply border-red-400 bg-red-500/20;
+  }
+  
+  .role-card.illuminated {
+    @apply border-yellow-500/50 hover:border-yellow-400;
+  }
+  
+  .role-card.illuminated.selected {
+    @apply border-yellow-400 bg-yellow-500/20;
+  }
+  
+  .role-card.enchanter {
+    @apply border-pink-500/50 hover:border-pink-400;
+  }
+  
+  .role-card.enchanter.selected {
+    @apply border-pink-400 bg-pink-500/20;
+  }
+  
+  .role-card.disciple {
+    @apply border-cyan-500/50 hover:border-cyan-400;
+  }
+  
+  .role-card.disciple.selected {
+    @apply border-cyan-400 bg-cyan-500/20;
+  }
+  
+  .role-card.traveler {
+    @apply border-orange-500/50 hover:border-orange-400;
+  }
+  
+  .role-card.traveler.selected {
+    @apply border-orange-400 bg-orange-500/20;
+  }
+  
+  .role-card.wanderer {
+    @apply border-indigo-500/50 hover:border-indigo-400;
+  }
+  
+  .role-card.wanderer.selected {
+    @apply border-indigo-400 bg-indigo-500/20;
+  }
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.6s ease-out;
+}
+
+.animate-glow {
+  animation: glow 2s infinite;
+}
+
+/* Effets de survol pour les résultats */
+.result-card {
+  @apply bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-xl;
+  @apply border border-white/10 rounded-3xl p-8;
+  transition: all 0.4s ease;
+}
+
+.result-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .glass-card {
+    @apply rounded-2xl;
+  }
+  
+  .btn-primary {
+    @apply px-6 py-3;
+  }
+  
+  .input-field {
+    @apply px-4 py-3;
+  }
+}
